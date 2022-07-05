@@ -2,22 +2,23 @@ import './navigation.styles.scss';
 import { Fragment, useContext } from 'react';
 import { Outlet, Link } from 'react-router-dom';
 
+import CartIcon from '../../components/cart-icon/cart-icon.component';
+import CartDropdown from '../../components/cart-dropdown/cart-drop.component';
+
 import { ReactComponent as EzLogo } from '../../assets/ez-logo.svg';
 
 import { UserContext } from '../../context/user.context';
+import { CartContext } from '../../context/cart.context';
 
 import { signOutUser } from '../../utils/firebase.utils';
 
 
 const Navigation = () => {
 
-    const { currentUser, setCurrentUser } = useContext(UserContext);
+    const { currentUser } = useContext(UserContext);
+    const { isCartOpen } = useContext(CartContext);
     // console.log(currentUser);
 
-    const signOutHandler = async () => {
-      await signOutUser();
-      setCurrentUser(null);
-    }
 
     return (
       <Fragment>
@@ -31,14 +32,16 @@ const Navigation = () => {
                 </Link>
                 {
                   currentUser ? (
-                    <span className='nav-link' onClick={signOutHandler}>
+                    <span className='nav-link' onClick={signOutUser}>
                     SIGN OUT
                     </span>)
                     : (<Link className='nav-link' to='/auth'>
                     SIGN IN
                 </Link>)
                 }
+                <CartIcon/>
             </div>
+            {isCartOpen && <CartDropdown />}
         </div>
         <Outlet/>
       </Fragment>
